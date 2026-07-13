@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Luz & Palavra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4eee1;
+    --paper-2:#ebe1cf;
+    --ink:#1f1d1a;
+    --muted:#9a9081;
+    --beige:#ecd9a6;
+    --line:rgba(31,29,26,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Courier Prime',monospace;
+    color:var(--ink);
+    min-height:100dvh;display:flex;align-items:center;justify-content:center;
+    padding:24px 16px;overflow-x:hidden;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(255,255,255,.6), transparent 55%),
+      radial-gradient(circle at 50% 110%, rgba(180,165,140,.35), transparent 55%),
+      linear-gradient(180deg,var(--paper),var(--paper-2));
+  }
+  body::after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  }
+
+  .stage{position:relative;z-index:1;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;gap:22px;}
+
+  .topbar{width:100%;display:flex;align-items:center;justify-content:space-between;}
+  .langs{display:flex;gap:4px;}
+  .lang{
+    font-family:'Courier Prime',monospace;font-size:13px;font-weight:700;letter-spacing:.5px;
+    color:var(--muted);background:transparent;border:1px solid transparent;
+    padding:5px 9px;border-radius:6px;cursor:pointer;transition:.2s;
+  }
+  .lang:hover{color:var(--ink);}
+  .lang.active{color:var(--ink);border-color:var(--line);}
+  .tools{display:flex;gap:8px;}
+  .icon{
+    width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
+    background:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:.2s;
+  }
+  .icon:hover{background:rgba(255,255,255,.7);transform:translateY(-1px);}
+  .icon svg{width:17px;height:17px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .icon:disabled{opacity:.4;cursor:not-allowed;}
+
+  .brand{text-align:center;line-height:1;}
+  .brand h1{font-family:'Special Elite',monospace;font-weight:400;font-size:26px;letter-spacing:1px;color:var(--ink);}
+  .brand small{display:block;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+
+  .sheet{width:100%;text-align:center;padding:14px 6px;}
+  .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+  .phrase{
+    font-family:'Courier Prime',monospace;font-size:26px;line-height:1.5;font-weight:700;
+    color:var(--ink);text-align:center;min-height:150px;
+    display:block;padding:4px 2px;
+  }
+  .phrase.rolling{font-weight:400;color:var(--muted);font-style:normal;opacity:.85;}
+  .hl{position:relative;display:inline;color:var(--ink);white-space:nowrap;}
+  .hl::before{
+    content:"";position:absolute;left:-4px;right:-4px;top:6%;bottom:4%;z-index:-1;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'%3E%3Cpath d='M3,20 C40,10 70,28 110,18 C150,8 175,26 197,17 L199,46 C160,38 130,52 95,42 C60,32 30,50 2,42 Z' fill='%23ecd9a6'/%3E%3C/svg%3E") no-repeat;
+    background-size:100% 100%;opacity:.92;transform:rotate(-0.9deg);border-radius:3px;
+  }
+  .source{margin-top:20px;font-size:13px;color:var(--muted);letter-spacing:.5px;}
+  .source .l{font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;}
+
+  .sign{margin-top:6px;}
+  .sign a{font-size:14px;color:var(--muted);text-decoration:none;letter-spacing:1px;transition:.25s;}
+  .sign a:hover{color:var(--ink);}
+  .hint{font-size:12px;color:var(--muted);text-align:center;min-height:16px;font-style:italic;}
+  .hint b{font-style:normal;color:var(--ink);}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:rgba(31,29,26,.92);color:var(--paper);padding:10px 18px;border-radius:8px;
+    font-size:13px;font-family:'Courier Prime',monospace;letter-spacing:.5px;
+    opacity:0;pointer-events:none;transition:.35s;z-index:20;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (max-width:420px){.phrase{font-size:22px;}.brand h1{font-size:22px;}}
+</style>
+</head>
+<body>
+  <main class="stage">
+    <div class="topbar">
+      <div class="langs" id="langs">
+        <button class="lang active" data-lang="pt">PT</button>
+        <button class="lang" data-lang="en">EN</button>
+        <button class="lang" data-lang="es">ES</button>
+        <button class="lang" data-lang="it">IT</button>
+      </div>
+      <div class="tools">
+        <button class="icon" id="readBtn" title="Ler em voz alta">
+          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        </button>
+        <button class="icon" id="shareBtn" title="Compartilhar">
+          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8 15.8 6.2M8.2 13.2 15.8 17.8"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="brand">
+      <h1>Luz &amp; Palavra</h1>
+      <small>frases para a alma</small>
+    </div>
+
+    <section class="sheet">
+      <div class="eyebrow" id="eyebrow">Frase do dia</div>
+      <p class="phrase" id="phrase"></p>
+      <div class="source" id="source"></div>
+    </section>
+
+    <div class="sign"><a href="https://instagram.com/ilustre.ai" target="_blank" rel="noopener">@ilustre.ai</a></div>
+    <div class="hint" id="hint"></div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+const PHRASES = [
+  {pt:"Deus é amor.",en:"God is love.",es:"Dios es amor.",it:"Dio è amore.",src:"Primeira Carta de São João 4,8"},
+  {pt:"O Senhor é meu pastor, nada me faltará.",en:"The Lord is my shepherd, I shall not want.",es:"El Señor es mi pastor, nada me falta.",it:"Il Signore è il mio pastore, non manco di nulla.",src:"Salmo 22(23),1"},
+  {pt:"Vinde a mim, vós que estais cansados e sobrecarregados, e eu vos aliviarei.",en:"Come to me, all you who are weary and burdened, and I will give you rest.",es:"Venid a mí, los que estáis cansados y cargados, y yo os aliviaré.",it:"Venite a me, voi tutti che siete affaticati e oppressi, e io vi darò riposo.",src:"Evangelho de Mateus 11,28"},
+  {pt:"Tudo posso Naquele que me fortalece.",en:"I can do all things through Him who strengthens me.",es:"Todo lo puedo en Cristo que me fortalece.",it:"Tutto posso in Colui che mi dà la forza.",src:"Carta aos Filipenses 4,13"},
+  {pt:"Alegrai-vos sempre no Senhor!",en:"Rejoice in the Lord always!",es:"¡Alegraos siempre en el Señor!",it:"Rallegratevi sempre nel Signore!",src:"Carta aos Filipenses 4,4"},
+  {pt:"Não tenhas medo, pois eu estou contigo.",en:"Fear not, for I am with you.",es:"No temas, porque yo estoy contigo.",it:"Non temere, perché io sono con te.",src:"Profecia de Isaías 41,10"},
+  {pt:"Senhor, fazei-me instrumento de vossa paz.",en:"Lord, make me an instrument of your peace.",es:"Señor, haced de mí un instrumento de vuestra paz.",it:"Signore, fammi strumento della tua pace.",src:"São Francisco de Assis"},
+  {pt:"Onde há caridade e amor, aí está Deus.",en:"Where there is charity and love, there is God.",es:"Donde hay caridad y amor, allí está Dios.",it:"Dove c'è carità e amore, ivi è Dio.",src:"Santo Agostinho"},
+  {pt:"Confia no Senhor de todo o teu coração.",en:"Trust in the Lord with all your heart.",es:"Confía en el Señor con todo tu corazón.",it:"Confida nel Signore con tutto il cuore.",src:"Provérbios 3,5"},
+  {pt:"Eu sou o caminho, a verdade e a vida.",en:"I am the way, the truth and the life.",es:"Yo soy el camino, la verdad y la vida.",it:"Io sono la via, la verità e la vita.",src:"Evangelho de João 14,6"},
+  {pt:"Bem-aventurados os misericordiosos, pois alcançarão misericórdia.",en:"Blessed are the merciful, for they shall obtain mercy.",es:"Bienaventurados los misericordiosos, porque ellos alcanzarán misericordia.",it:"Beati i misericordiosi, perché otterranno misericordia.",src:"Evangelho de Mateus 5,7"},
+  {pt:"Amai-vos uns aos outros como eu vos amei.",en:"Love one another as I have loved you.",es:"Amaos unos a otros como yo os he amado.",it:"Amatevi gli uni gli altri come io vi ho amato.",src:"Evangelho de João 13,34"},
+  {pt:"A fé é a certeza daquilo que esperamos.",en:"Faith is the assurance of things hoped for.",es:"La fe es la garantía de lo que esperamos.",it:"La fede è la garanzia delle cose che speriamo.",src:"Carta aos Hebreus 11,1"},
+  {pt:"Lança sobre o Senhor os teus cuidados, e Ele te sustentará.",en:"Cast your cares on the Lord and He will sustain you.",es:"Echa sobre el Señor tus afanes, y Él te sustentará.",it:"Getta sul Signore il tuo affanno, ed Egli ti sosterrà.",src:"Salmo 54(55),23"},
+  {pt:"Em tudo dai graças, pois esta é a vontade de Deus.",en:"Give thanks in all circumstances, for this is God's will.",es:"Dad gracias en todo, porque esta es la voluntad de Dios.",it:"In ogni cosa rendete grazie: questa è la volontà di Dio.",src:"Primeira Carta aos Tessalonicenses 5,18"},
+  {pt:"O amor tudo sofre, tudo crê, tudo espera, tudo suporta.",en:"Love bears all things, believes all, hopes all, endures all.",es:"El amor todo lo sufre, todo lo cree, todo lo espera.",it:"La carità tutto soffre, tutto crede, tutto spera, tutto sopporta.",src:"Primeira Carta aos Coríntios 13,7"},
+  {pt:"Tu nos criaste para Ti, e o nosso coração inquieto até descansa em Ti.",en:"You have made us for Yourself, and our heart is restless until it rests in You.",es:"Nos creaste para Ti, y nuestro corazón inquieto no descansa hasta hallarte.",it:"Ci hai creati per Te, e il nostro cuore è inquieto finché non riposa in Te.",src:"Santo Agostinho"},
+  {pt:"Porque eu bem conheço os planos que tenho para vós — de paz, e não de mal.",en:"For I know the plans I have for you — plans for peace, not for evil.",es:"Porque yo sé los planes que tengo para vosotros — de paz, no de mal.",it:"Io so i progetti che ho per voi — di pace, non di sventura.",src:"Profecia de Jeremias 29,11"},
+  {pt:"Coragem! Eu venci o mundo.",en:"Take courage! I have overcome the world.",es:"¡Ánimo! Yo he vencido al mundo.",it:"Coraggio! Io ho vinto il mondo.",src:"Evangelho de João 16,33"},
+  {pt:"Buscai primeiro o Reino de Deus, e o resto vos será dado.",en:"Seek first the Kingdom of God, and all else will be given you.",es:"Buscad primero el Reino de Dios, y lo demás se os dará.",it:"Cercate prima il Regno di Dio, e il resto vi sarà dato.",src:"Evangelho de Mateus 6,33"},
+  {pt:"Sede misericordiosos como vosso Pai é misericordioso.",en:"Be merciful as your Father is merciful.",es:"Sed misericordiosos como vuestro Padre es misericordioso.",it:"Siate misericordiosi come il Padre vostro è misericordioso.",src:"Evangelho de Lucas 6,36"},
+  {pt:"A minha graça basta-te, porque a força se aperfeiçoa na fraqueza.",en:"My grace is sufficient for you, for power is made perfect in weakness.",es:"Bástate mi gracia, pues la fuerza se perfecciona en la debilidad.",it:"Ti basta la mia grazia, perché la potenza si manifesta nella debolezza.",src:"Segunda Carta aos Coríntios 12,9"},
+  {pt:"Deixai vir a mim as criancinhas, porque delas é o Reino dos Céus.",en:"Let the little children come to me, for theirs is the Kingdom of Heaven.",es:"Dejad que los niños vengan a mí, pues de ellos es el Reino.",it:"Lasciate che i bambini vengano a me, perché di essi è il Regno.",src:"Evangelho de Marcos 10,14"},
+  {pt:"Eu sou a luz do mundo. Quem me segue não caminha nas trevas.",en:"I am the light of the world. Who follows me will not walk in darkness.",es:"Yo soy la luz del mundo. Quien me sigue no camina en tinieblas.",it:"Io sono la luce del mondo. Chi mi segue non cammina nelle tenebre.",src:"Evangelho de João 8,12"},
+  {pt:"Pedi e recebereis; buscai e encontrareis; batei e abrir-se-vos-á.",en:"Ask and you shall receive; seek and you shall find; knock and it will be opened.",es:"Pedid y se os dará; buscad y hallaréis; llamad y se os abrirá.",it:"Chiedete e vi sarà dato; cercate e troverete; bussate e vi sarà aperto.",src:"Evangelho de Mateus 7,7"},
+  {pt:"O Espírito Santo vos ensinará todas as coisas.",en:"The Holy Spirit will teach you all things.",es:"El Espírito Santo os enseñará todas las cosas.",it:"Lo Spirito Santo vi insegnerà ogni cosa.",src:"Evangelho de João 14,26"},
+  {pt:"Amarás o Senhor, teu Deus, de todo o teu coração.",en:"You shall love the Lord your God with all your heart.",es:"Amarás al Señor, tu Dios, con todo tu corazón.",it:"Amerai il Signore Dio tuo con tutto il cuore.",src:"Evangelho de Mateus 22,37"},
+  {pt:"Fazei o que Ele vos disser.",en:"Do whatever He tells you.",es:"Haced lo que Él os diga.",it:"Fate tutto quello che vi dirà.",src:"Virgem Maria — Evangelho de João 2,5"},
+  {pt:"Ave Maria, cheia de graça, o Senhor é convosco.",en:"Hail Mary, full of grace, the Lord is with you.",es:"Dios te salve, María, llena eres de gracia, el Señor es contigo.",it:"Ave Maria, piena di grazia, il Signore è con te.",src:"Evangelho de Lucas 1,28"},
+  {pt:"Eis aqui a serva do Senhor; faça-se em mim segundo a vossa palavra.",en:"Behold the handmaid of the Lord; be it done to me according to your word.",es:"He aquí la esclava del Señor; hágase en mí según tu palabra.",it:"Ecco la serva del Signore; si faccia a me secondo la tua parola.",src:"Evangelho de Lucas 1,38"},
+  {pt:"Felizes os que ouvem a Palavra de Deus e a põem em prática.",en:"Blessed are those who hear the word of God and keep it.",es:"Bienaventurados los que oyen la palabra de Dios y la cumplen.",it:"Beati coloro che ascoltano la parola di Dio e la osservano.",src:"Evangelho de Lucas 11,28"},
+  {pt:"Ide, pois, e fazei discípulos de todas as nações.",en:"Go, therefore, and make disciples of all nations.",es:"Id, pues, y haced discípulos a todas las naciones.",it:"Andate, dunque, e fate discepoli tutti i popoli.",src:"Evangelho de Mateus 28,19"},
+  {pt:"Quem quiser salvar a sua vida, há de perdê-la; mas quem a perder por mim, há de encontrá-la.",en:"Whoever would save his life will lose it, but whoever loses it for me will find it.",es:"Quien quiera salvar su vida, la perderá; pero quien la pierda por mí, la encontrará.",it:"Chi vorrà salvare la propria vita, la perderà; ma chi la perderà per me, la ritroverà.",src:"Evangelho de Mateus 16,25"},
+  {pt:"Acolhei-vos uns aos outros, como Cristo nos acolheu.",en:"Welcome one another, as Christ has welcomed you.",es:"Aceptaos los unos a los otros, como Cristo os acogió.",it:"Accoglietevi gli uni gli altri, come Cristo ci ha accolti.",src:"Carta aos Romanos 15,7"},
+  {pt:"Ele é a nossa paz, Aquele que de dois fez um.",en:"He is our peace, who has made the two one.",es:"Él es nuestra paz, el que de dos hizo uno.",it:"Egli è la nostra pace, colui che dei due ha fatto una cosa sola.",src:"Carta aos Efésios 2,14"},
+  {pt:"Vós sois a luz do mundo. Assim brilhe a vossa luz.",en:"You are the light of the world. Let your light shine.",es:"Vosotros sois la luz del mundo. Brille así vuestra luz.",it:"Voi siete la luce del mondo. Risplenda così la vostra luce.",src:"Evangelho de Mateus 5,14"},
+  {pt:"De manhã, Senhor, ouço a vossa voz.",en:"In the morning, Lord, I listen for your voice.",es:"Por la mañana, Señor, escucho tu voz.",it:"Al mattino, Signore, ascolto la tua voce.",src:"Salmo 5,4"},
+  {pt:"Bom é louvar ao Senhor e cantar louvores ao vosso nome.",en:"It is good to praise the Lord and sing praises to your name.",es:"Bueno es alabar al Señor y cantar alabanzas a tu nombre.",it:"È bello lodare il Signore e cantare inni al tuo nome.",src:"Salmo 92(93),1"},
+  {pt:"Na casa de meu Pai há muitas moradas.",en:"In my Father's house are many rooms.",es:"En la casa de mi Padre hay muchas moradas.",it:"Nella casa del Padre mio vi sono molte dimore.",src:"Evangelho de João 14,2"},
+  {pt:"A minha paz vos deixo, a minha paz vos dou.",en:"Peace I leave with you; my peace I give to you.",es:"La paz os dejo, mi paz os doy.",it:"La pace vi lascio, la mia pace vi do.",src:"Evangelho de João 14,27"},
+  {pt:"No amor não há medo; o amor perfeito lança fora o medo.",en:"There is no fear in love; perfect love casts out fear.",es:"En el amor no hay temor; el amor perfecto expulsa el miedo.",it:"Nell'amore non c'è timore; l'amore perfetto scaccia il timore.",src:"Primeira Carta de São João 4,18"},
+  {pt:"Pois onde está o teu tesouro, aí estará também o teu coração.",en:"For where your treasure is, there your heart will be also.",es:"Porque donde está tu tesoro, allí estará también tu corazón.",it:"Perché dove è il tuo tesoro, là sarà anche il tuo cuore.",src:"Evangelho de Mateus 6,21"},
+  {pt:"Permanecei no meu amor, e dareis fruto abundante.",en:"Remain in my love, and you will bear much fruit.",es:"Permaneced en mi amor, y daréis mucho fruto.",it:"Rimanete nel mio amore, e porterete molto frutto.",src:"Evangelho de João 15,9"},
+  {pt:"Tudo quanto fizerdes, fazei-o com amor.",en:"Whatever you do, do it with love.",es:"Todo lo que hagáis, hacedlo con amor.",it:"Qualsiasi cosa facciate, fatela con amore.",src:"Primeira Carta aos Coríntios 16,14"},
+  {pt:"Alegrai-vos com os que se alegram; chorai com os que choram.",en:"Rejoice with those who rejoice; weep with those who weep.",es:"Alegraos con los que se alegran; llorad con los que lloran.",it:"Rallegratevi con quelli che sono nella gioia; piangete con quelli che piangono.",src:"Carta aos Romanos 12,15"},
+  {pt:"O Senhor é a minha luz e a minha salvação; a quem temerei?",en:"The Lord is my light and my salvation; whom shall I fear?",es:"El Señor es mi luz y mi salvación; ¿a quién temeré?",it:"Il Signore è mia luce e mia salvezza: di chi avrò timore?",src:"Salmo 26(27),1"},
+  {pt:"Reza, espera e não te preocupes; a Providência divina cuida de tudo.",en:"Pray, hope, and don't worry; Divine Providence takes care of all.",es:"Reza, espera y no te preocupes; la divina Providencia cuida de todo.",it:"Prega, spera e non ti preoccupare; la divina Provvidenza provvede a tutto.",src:"São Padre Pio"},
+  {pt:"Façamos pequenas coisas com muito amor.",en:"Let us do small things with great love.",es:"Hagamos pequeñas cosas con mucho amor.",it:"Facciamo piccole cose con molto amore.",src:"Santa Teresinha do Menino Jesus"},
+  {pt:"A alegria é a graça mais evidente do Espírito Santo.",en:"Joy is the most evident grace of the Holy Spirit.",es:"La alegría es la gracia más evidente del Espírito Santo.",it:"La gioia è la grazia più evidente dello Spirito Santo.",src:"São Padre Pio"},
+  {pt:"A Deus pertence a alegria; confia, Ele escreve certo por linhas tortas.",en:"Joy belongs to God; trust, He writes straight on crooked lines.",es:"A Dios pertenece la alegría; confía, Él escribe derecho sobre renglones torcidos.",it:"La gioia appartiene a Dio; confida, Lui scrive dritto su righe tortuose.",src:"Santa Teresa de Ávila"},
+  {pt:"Nada te perturbe, nada te espante; tudo passa, só Deus basta.",en:"Let nothing disturb you, nothing frighten you; all things pass, God alone suffices.",es:"Nada te turbe, nada te espante; todo pasa, solo Dios basta.",it:"Niente ti turbi, nulla ti spaventi; tutto passa, Dio solo basta.",src:"Santa Teresa de Ávila"},
+  {pt:"Deus não olha a grandiosidade das obras, mas a quantidade de amor com que são feitas.",en:"God does not look at the greatness of the works, but at the love with which they are done.",es:"Dios no mira la grandiosidad de las obras, sino la cantidad de amor con que se hacen.",it:"Dio non guarda la grandezza delle opere, ma la quantità di amore con cui sono fatte.",src:"São Vicente de Paulo"}
+];
+
+const STRONG = {
+  pt:["deus","senhor","amor","paz","luz","vida","fé","alegria","esperança","coragem","graça","misericórdia","salvação","reino","espírito","cristo","fortalece","coração","providência"],
+  en:["god","lord","love","peace","light","life","faith","joy","hope","courage","grace","mercy","salvation","kingdom","spirit","christ","strengthens","heart","providence"],
+  es:["dios","señor","amor","paz","luz","vida","fe","alegría","esperanza","ánimo","gracia","misericordia","salvación","reino","espíritu","cristo","fortalece","corazón","providencia"],
+  it:["dio","signore","amore","pace","luce","vita","fede","gioia","speranza","coraggio","grazia","misericordia","salvezza","regno","spirito","cristo","forza","cuore","provvidenza"]
+};
+function isStrong(word,lang){
+  const core=word.toLowerCase().replace(/[.,;:!?()"']/g,'');
+  return STRONG[lang].includes(core);
+}
+
+const $ = s => document.querySelector(s);
+const phraseEl=$('#phrase'), sourceEl=$('#source'), eyebrowEl=$('#eyebrow'),
+      hintEl=$('#hint'), langBtns=document.querySelectorAll('.lang'),
+      readBtn=$('#readBtn'), shareBtn=$('#shareBtn'), toastEl=$('#toast');
+
+let lang='pt', current=null, rolling=false, speech=null;
+
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function loadState(){try{return JSON.parse(localStorage.getItem('luzPalavra')||'null');}catch(e){return null;}}
+function saveState(o){localStorage.setItem('luzPalavra',JSON.stringify(o));}
+function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toastEl.classList.remove('show'),2200);}
+function pick(){return PHRASES[Math.floor(Math.random()*PHRASES.length)];}
+
+function highlightHTML(text){
+  return text.split(/(\s+)/).map(tok=>{
+    if(/^\s+$/.test(tok)||tok==='')return tok;
+    return isStrong(tok,lang) ? '<mark class="hl">'+tok+'</mark>' : tok;
+  }).join('');
+}
+function show(p,label){
+  current=p;eyebrowEl.textContent=label;
+  phraseEl.classList.remove('rolling');
+  phraseEl.innerHTML=highlightHTML(p[lang]);
+  sourceEl.innerHTML='<span class="l">de onde veio</span>'+p.src;
+}
+
+function rollAnimation(label){
+  if(rolling)return;
+  rolling=true;shareBtn.disabled=true;readBtn.disabled=true;
+  eyebrowEl.textContent='Sorteando...';
+  phraseEl.classList.add('rolling');
+  const end=Date.now()+3000;
+  const tick=()=>{
+    phraseEl.textContent=pick()[lang];
+    if(Date.now()<end){requestAnimationFrame(tick);}
+    else{
+      const chosen=pick();
+      show(chosen,label);
+      saveState({date:todayStr(),idx:PHRASES.indexOf(chosen),label});
+      rolling=false;shareBtn.disabled=false;readBtn.disabled=false;
+      lockUntilMidnight();
+      toast('Frase guardada até a meia-noite ✦');
+    }
+  };
+  requestAnimationFrame(tick);
+}
+
+function lockUntilMidnight(){
+  const now=new Date(), midnight=new Date(now);midnight.setHours(24,0,0,0);
+  const upd=()=>{
+    const left=midnight-new Date();
+    if(left<=0){hintEl.innerHTML='Nova frase disponível após a <b>meia-noite</b> ✦';clearInterval(upd._i);return;}
+    const m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);
+    hintEl.innerHTML='Próxima frase após a meia-noite · <b>'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'</b>';
+  };
+  upd();upd._i=setInterval(upd,1000);
+}
+
+function init(){
+  const st=loadState();
+  if(st&&st.date===todayStr()&&PHRASES[st.idx]){
+    show(PHRASES[st.idx],st.label||'Frase do dia');
+    lockUntilMidnight();
+  }else{
+    rollAnimation('Frase do dia');
+  }
+}
+
+langBtns.forEach(b=>b.addEventListener('click',()=>{
+  lang=b.dataset.lang;
+  langBtns.forEach(x=>x.classList.toggle('active',x===b));
+  if(current)show(current,eyebrowEl.textContent);
+}));
+
+readBtn.addEventListener('click',()=>{
+  if(!current)return;
+  if(speechSynthesis.speaking){speechSynthesis.cancel();return;}
+  const map={pt:'pt-BR',en:'en-US',es:'es-ES',it:'it-IT'};
+  speech=new SpeechSynthesisUtterance(current[lang]);
+  speech.lang=map[lang];speech.rate=.95;speech.pitch=1;
+  speechSynthesis.speak(speech);
+});
+
+shareBtn.addEventListener('click',()=>{if(!rolling&&current)shareStory(current,eyebrowEl.textContent);});
+
+/* ---------- canvas: story minimalista ---------- */
+function wrapText(ctx,text,maxW){
+  const words=text.split(' ');const lines=[];let line='';
+  for(const w of words){const t=line?line+' '+w:w;
+    if(ctx.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t;}
+  if(line)lines.push(line);return lines;
+}
+function drawMarker(ctx,x,y,w,h,rot){
+  ctx.save();ctx.translate(x,y);ctx.rotate(rot);ctx.fillStyle='rgba(236,217,166,.85)';
+  ctx.beginPath();
+  ctx.moveTo(0,h*0.18);
+  ctx.bezierCurveTo(w*0.3,-h*0.08,w*0.7,h*0.28,w,h*0.12);
+  ctx.lineTo(w,h*0.92);
+  ctx.bezierCurveTo(w*0.7,h*1.18,w*0.3,h*0.82,0,h*1.04);
+  ctx.closePath();ctx.fill();ctx.restore();
+}
+function paperBg(ctx,W,H){
+  const g=ctx.createLinearGradient(0,0,0,H);
+  g.addColorStop(0,'#f6f0e3');g.addColorStop(1,'#e9dfcd');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='rgba(120,105,80,.05)';
+  for(let i=0;i<2600;i++){const x=Math.random()*W,y=Math.random()*H;ctx.fillRect(x,y,1,1);}
+}
+function renderPhrase(ctx,p,lang,W,H){
+  const fs=66,lh=fs*1.28,cx=W/2;
+  ctx.font='700 '+fs+'px "Courier Prime", monospace';
+  const maxW=W-200, lines=wrapText(ctx,p[lang],maxW);
+  const totalH=lines.length*lh, startY=(H-totalH)/2 + lh*0.15;
+  const boxes=[];
+  lines.forEach((line,li)=>{
+    const words=line.split(' ');
+    const ww=words.map(w=>ctx.measureText(w).width);
+    const sp=ctx.measureText(' ').width;
+    const lineW=ww.reduce((a,b)=>a+b,0)+sp*(words.length-1);
+    let x=cx-lineW/2;const y=startY+li*lh;
+    words.forEach((w,wi)=>{boxes.push({w,x,y,w:ww[wi],strong:isStrong(w,lang)});x+=ww[wi]+sp;});
+  });
+  boxes.forEach(b=>{if(b.strong)drawMarker(ctx,b.x-5,b.y-fs*0.92,b.w+10,fs*1.05,(Math.random()*1.6-0.8)*Math.PI/180);});
+  ctx.fillStyle='#1f1d1a';ctx.textAlign='left';ctx.textBaseline='alphabetic';
+  boxes.forEach(b=>ctx.fillText(b.w,b.x,b.y));
+}
+function makeStory(p,label){
+  return new Promise(res=>{
+    const W=1080,H=1920,sc=2;
+    const c=document.createElement('canvas');c.width=W*sc;c.height=H*sc;
+    const ctx=c.getContext('2d');ctx.scale(sc,sc);
+    paperBg(ctx,W,H);
+    ctx.textAlign='center';
+    ctx.fillStyle='#1f1d1a';ctx.font='400 60px "Special Elite", monospace';
+    ctx.fillText('Luz & Palavra',W/2,210);
+    ctx.fillStyle='#9a9081';ctx.font='400 24px "Courier Prime", monospace';
+    ctx.fillText((label||'FRASE DO DIA').toUpperCase(),W/2,260);
+    renderPhrase(ctx,p,lang,W,H);
+    ctx.fillStyle='#9a9081';ctx.font='400 30px "Courier Prime", monospace';
+    ctx.fillText('@ilustre.ai',W/2,H-110);
+    c.toBlob(b=>res(b),'image/png');
+  });
+}
+async function shareStory(p,label){
+  const blob=await makeStory(p,label);
+  const file=new File([blob],'luz-e-palavra.png',{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],title:'Luz & Palavra'});return;}catch(e){}
+  }
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='luz-e-palavra-story.png';a.click();URL.revokeObjectURL(url);
+  toast('Story baixado ✦');
+}
+
+init();
+</script>
+</body>
+</html>
