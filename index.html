@@ -338,11 +338,11 @@ async function makeStory(p,label){
     ctx.textAlign='center';
     ctx.fillStyle='#1f1d1a';ctx.font='400 62px "Special Elite", monospace';
     ctx.fillText('Caritas',W/2,210);
-    ctx.fillStyle='#9a9081';ctx.font='400 24px "Courier Prime", monospace';
-    ctx.fillText((label||'FRASE DO DIA').toUpperCase(),W/2,262);
     renderPhrase(ctx,p,lang,W,H);
+    ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 46px "Courier Prime", monospace';
+    ctx.fillText('caritas',W/2,H-190);
     ctx.fillStyle='#9a9081';ctx.font='400 32px "Courier Prime", monospace';
-    ctx.fillText('@ilustre.ai',W/2,H-110);
+    ctx.fillText('@ilustre.ai',W/2,H-115);
     c.toBlob(b=>res(b),'image/png');
   });
 }
