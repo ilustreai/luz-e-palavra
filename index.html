@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Luz & Palavra</title>
+<title>Caritas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
@@ -70,8 +70,21 @@
   .sign{margin-top:6px;}
   .sign a{font-size:14px;color:var(--muted);text-decoration:none;letter-spacing:1px;transition:.25s;}
   .sign a:hover{color:var(--ink);}
-  .hint{font-size:12px;color:var(--muted);text-align:center;min-height:16px;font-style:italic;}
+  .hint{font-size:12px;color:var(--muted);text-align:center;min-height:16px;font-style:italic;margin-top:2px;}
   .hint b{font-style:normal;color:var(--ink);}
+
+  .controls{width:100%;display:flex;justify-content:center;margin-top:26px;}
+  .btn-download{
+    font-family:'Special Elite',monospace;font-size:17px;letter-spacing:.5px;
+    color:var(--paper);background:var(--ink);border:1px solid var(--ink);
+    padding:15px 34px;border-radius:12px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:10px;
+    box-shadow:0 10px 22px -10px rgba(31,29,26,.6);transition:.2s;
+  }
+  .btn-download:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 28px -10px rgba(31,29,26,.7);}
+  .btn-download:active:not(:disabled){transform:translateY(0);}
+  .btn-download:disabled{opacity:.5;cursor:not-allowed;}
+  .btn-download svg{width:20px;height:20px;}
 
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
@@ -81,7 +94,16 @@
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-  @media (max-width:420px){.phrase{font-size:22px;}.brand h1{font-size:22px;}}
+  @media (max-width:420px){
+    .phrase{font-size:23px;min-height:170px;}
+    .stage{gap:18px;}
+    .btn-download{width:100%;max-width:340px;justify-content:center;font-size:16px;padding:15px 20px;}
+  }
+  @media (min-width:760px){
+    .stage{max-width:560px;}
+    .phrase{font-size:34px;min-height:220px;}
+    .sheet{padding:46px 10px;}
+  }
 </style>
 </head>
 <body>
@@ -93,14 +115,9 @@
         <button class="lang" data-lang="es">ES</button>
         <button class="lang" data-lang="it">IT</button>
       </div>
-      <div class="tools">
-        <button class="icon" id="readBtn" title="Ler em voz alta">
-          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-        </button>
-        <button class="icon" id="shareBtn" title="Compartilhar">
-          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.2 10.8 15.8 6.2M8.2 13.2 15.8 17.8"/></svg>
-        </button>
-      </div>
+      <button class="icon" id="readBtn" title="Ler em voz alta">
+        <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+      </button>
     </div>
 
     <section class="sheet">
@@ -109,6 +126,13 @@
 
     <div class="sign"><a href="https://instagram.com/ilustre.ai" target="_blank" rel="noopener">@ilustre.ai</a></div>
     <div class="hint" id="hint"></div>
+
+    <div class="controls">
+      <button class="btn-download" id="shareBtn">
+        <svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Baixar imagem
+      </button>
+    </div>
   </main>
 
   <div class="toast" id="toast"></div>
@@ -319,7 +343,7 @@ async function makeStory(p,label){
     paperBg(ctx,W,H);
     ctx.textAlign='center';
     ctx.fillStyle='#1f1d1a';ctx.font='400 62px "Special Elite", monospace';
-    ctx.fillText('Luz & Palavra',W/2,210);
+    ctx.fillText('Caritas',W/2,210);
     ctx.fillStyle='#9a9081';ctx.font='400 24px "Courier Prime", monospace';
     ctx.fillText((label||'FRASE DO DIA').toUpperCase(),W/2,262);
     renderPhrase(ctx,p,lang,W,H);
