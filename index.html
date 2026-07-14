@@ -54,15 +54,10 @@
   .icon svg{width:17px;height:17px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .icon:disabled{opacity:.4;cursor:not-allowed;}
 
-  .brand{text-align:center;line-height:1;margin-bottom:6px;}
-  .brand h1{font-family:'Special Elite',monospace;font-weight:400;font-size:28px;letter-spacing:1px;color:var(--ink);}
-  .brand small{display:block;font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-top:8px;}
-
-  .sheet{width:100%;max-width:460px;text-align:center;padding:26px 10px;}
-  .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:26px;}
+  .sheet{width:100%;max-width:460px;text-align:center;padding:34px 10px;}
   .phrase{
     font-family:'Special Elite',monospace;font-size:30px;line-height:1.55;
-    color:var(--ink);text-align:center;min-height:170px;
+    color:var(--ink);text-align:center;min-height:200px;
     display:block;padding:4px 2px;
   }
   .phrase.rolling{color:var(--muted);opacity:.85;}
@@ -72,9 +67,6 @@
     background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'%3E%3Cpath d='M3,20 C40,10 70,28 110,18 C150,8 175,26 197,17 L199,46 C160,38 130,52 95,42 C60,32 30,50 2,42 Z' fill='%23f0e2a6'/%3E%3C/svg%3E") no-repeat;
     background-size:100% 100%;opacity:.9;transform:rotate(-0.9deg);border-radius:3px;
   }
-  .source{margin-top:20px;font-size:13px;color:var(--muted);letter-spacing:.5px;}
-  .source .l{font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:3px;}
-
   .sign{margin-top:6px;}
   .sign a{font-size:14px;color:var(--muted);text-decoration:none;letter-spacing:1px;transition:.25s;}
   .sign a:hover{color:var(--ink);}
@@ -111,15 +103,8 @@
       </div>
     </div>
 
-    <div class="brand">
-      <h1>Luz &amp; Palavra</h1>
-      <small>frases para a alma</small>
-    </div>
-
     <section class="sheet">
-      <div class="eyebrow" id="eyebrow">Frase do dia</div>
       <p class="phrase" id="phrase"></p>
-      <div class="source" id="source"></div>
     </section>
 
     <div class="sign"><a href="https://instagram.com/ilustre.ai" target="_blank" rel="noopener">@ilustre.ai</a></div>
@@ -196,7 +181,7 @@ function isStrong(word,lang){
 }
 
 const $ = s => document.querySelector(s);
-const phraseEl=$('#phrase'), sourceEl=$('#source'), eyebrowEl=$('#eyebrow'),
+const phraseEl=$('#phrase'),
       hintEl=$('#hint'), langBtns=document.querySelectorAll('.lang'),
       readBtn=$('#readBtn'), shareBtn=$('#shareBtn'), toastEl=$('#toast');
 
@@ -224,16 +209,14 @@ function highlightHTML(text){
   return toks.map((t,i)=> strong.has(i) ? '<mark class="hl">'+t+'</mark>' : t).join('');
 }
 function show(p,label){
-  current=p;eyebrowEl.textContent=label;
+  current=p;
   phraseEl.classList.remove('rolling');
   phraseEl.innerHTML=highlightHTML(p[lang]);
-  sourceEl.innerHTML='<span class="l">de onde veio</span>'+p.src;
 }
 
 function rollAnimation(label){
   if(rolling)return;
   rolling=true;shareBtn.disabled=true;readBtn.disabled=true;
-  eyebrowEl.textContent='Sorteando...';
   phraseEl.classList.add('rolling');
   const end=Date.now()+3000;
   const tick=()=>{
@@ -252,14 +235,7 @@ function rollAnimation(label){
 }
 
 function lockUntilMidnight(){
-  const now=new Date(), midnight=new Date(now);midnight.setHours(24,0,0,0);
-  const upd=()=>{
-    const left=midnight-new Date();
-    if(left<=0){hintEl.innerHTML='Nova frase disponível após a <b>meia-noite</b> ✦';clearInterval(upd._i);return;}
-    const m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);
-    hintEl.innerHTML='Próxima frase após a meia-noite · <b>'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+'</b>';
-  };
-  upd();upd._i=setInterval(upd,1000);
+  hintEl.textContent='uma palavra por dia · renova à 00:00';
 }
 
 function init(){
