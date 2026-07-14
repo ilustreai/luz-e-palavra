@@ -335,14 +335,12 @@ async function makeStory(p,label){
     const c=document.createElement('canvas');c.width=W*sc;c.height=H*sc;
     const ctx=c.getContext('2d');ctx.scale(sc,sc);
     paperBg(ctx,W,H);
-    ctx.textAlign='center';
-    ctx.fillStyle='#1f1d1a';ctx.font='400 62px "Special Elite", monospace';
-    ctx.fillText('Caritas',W/2,210);
     renderPhrase(ctx,p,lang,W,H);
-    ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 46px "Courier Prime", monospace';
-    ctx.fillText('caritas',W/2,H-190);
+    ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 56px "Special Elite", monospace';
+    ctx.fillText('caritas',W/2,H-195);
     ctx.fillStyle='#9a9081';ctx.font='400 32px "Courier Prime", monospace';
-    ctx.fillText('@ilustre.ai',W/2,H-115);
+    ctx.fillText('@ilustre.ai',W/2,H-118);
     c.toBlob(b=>res(b),'image/png');
   });
 }
