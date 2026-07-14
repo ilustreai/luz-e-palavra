@@ -59,6 +59,7 @@
     display:block;padding:4px 2px;
   }
   .phrase.rolling{color:var(--muted);opacity:.85;}
+  .ref{font-size:13px;color:var(--muted);text-align:center;margin-top:20px;letter-spacing:.5px;}
   .hl{position:relative;display:inline;color:var(--ink);white-space:nowrap;}
   .hl::before{
     content:"";position:absolute;left:-5px;right:-5px;top:4%;bottom:2%;z-index:-1;
@@ -115,6 +116,7 @@
 
     <section class="sheet">
       <p class="phrase" id="phrase"></p>
+      <div class="ref" id="ref"></div>
     </section>
 
     <footer class="bottom">
@@ -197,7 +199,7 @@ function isStrong(word,lang){
 }
 
 const $ = s => document.querySelector(s);
-const phraseEl=$('#phrase'),
+const phraseEl=$('#phrase'), refEl=$('#ref'),
       hintEl=$('#hint'), langBtn=$('#langBtn'),
       readBtn=$('#readBtn'), shareBtn=$('#shareBtn'), toastEl=$('#toast');
 
@@ -229,6 +231,7 @@ function show(p,label){
   current=p;
   phraseEl.classList.remove('rolling');
   phraseEl.innerHTML=highlightHTML(p[lang]);
+  refEl.textContent=p.src;
 }
 
 function rollAnimation(label){
@@ -327,6 +330,7 @@ function renderPhrase(ctx,p,lang,W,H){
   boxes.forEach(b=>{if(b.strong)drawMarker(ctx,b.x-6,b.y-fs*0.95,b.w+12,fs*1.06,(Math.random()*1.6-0.8)*Math.PI/180);});
   ctx.fillStyle='#1f1d1a';ctx.textAlign='left';ctx.textBaseline='alphabetic';
   boxes.forEach(b=>ctx.fillText(b.text,b.x,b.y));
+  return startY + (lines.length-1)*lh + fs*0.15;
 }
 async function makeStory(p,label){
   if(document.fonts&&document.fonts.ready)await document.fonts.ready;
@@ -335,23 +339,26 @@ async function makeStory(p,label){
     const c=document.createElement('canvas');c.width=W*sc;c.height=H*sc;
     const ctx=c.getContext('2d');ctx.scale(sc,sc);
     paperBg(ctx,W,H);
-    renderPhrase(ctx,p,lang,W,H);
+    const bottomY=renderPhrase(ctx,p,lang,W,H);
     ctx.textAlign='center';ctx.textBaseline='alphabetic';
+    ctx.fillStyle='#9a9081';ctx.font='400 28px "Courier Prime", monospace';
+    ctx.fillText(p.src,W/2,bottomY+66);
     ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 56px "Special Elite", monospace';
-    ctx.fillText('caritas',W/2,H-195);
+    ctx.fillText('caritas',W/2,H-200);
     ctx.fillStyle='#9a9081';ctx.font='400 32px "Courier Prime", monospace';
-    ctx.fillText('@ilustre.ai',W/2,H-118);
+    ctx.fillText('by',W/2,H-152);
+    ctx.fillText('@ilustre.ai',W/2,H-116);
     c.toBlob(b=>res(b),'image/png');
   });
 }
 async function shareStory(p,label){
   const blob=await makeStory(p,label);
-  const file=new File([blob],'luz-e-palavra.png',{type:'image/png'});
+  const file=new File([blob],'caritas.png',{type:'image/png'});
   if(navigator.canShare&&navigator.canShare({files:[file]})){
-    try{await navigator.share({files:[file],title:'Luz & Palavra'});return;}catch(e){}
+    try{await navigator.share({files:[file],title:'Caritas'});return;}catch(e){}
   }
   const url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download='luz-e-palavra-story.png';a.click();URL.revokeObjectURL(url);
+  a.href=url;a.download='caritas-story.png';a.click();URL.revokeObjectURL(url);
   toast('Story baixado ✦');
 }
 
