@@ -212,7 +212,7 @@ function saveState(o){localStorage.setItem('luzPalavra',JSON.stringify(o));}
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toastEl.classList.remove('show'),2200);}
 function pick(){return PHRASES[Math.floor(Math.random()*PHRASES.length)];}
 function shortRef(s){
-  return s
+  let t = s
     .replace('Virgem Maria — ','')
     .replace('Primeira Carta de São João','1 João')
     .replace('Segunda Carta aos Coríntios','2 Coríntios')
@@ -227,6 +227,11 @@ function shortRef(s){
     .replace('Evangelho de João','João')
     .replace('Evangelho de Lucas','Lucas')
     .replace('Evangelho de Marcos','Marcos');
+  return t
+    .replace('1 João','1Jo').replace('2 Coríntios','2Cor').replace('1 Coríntios','1Cor').replace('1 Tessalonicenses','1Ts')
+    .replace('Mateus','Mt').replace('Marcos','Mc').replace('Lucas','Lc').replace('João','Jo')
+    .replace('Salmo','Sl').replace('Isaías','Is').replace('Jeremias','Jr')
+    .replace('Filipenses','Fl').replace('Romanos','Rm').replace('Hebreus','Hb');
 }
 
 function highlightHTML(text){
