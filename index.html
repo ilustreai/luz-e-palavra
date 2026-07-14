@@ -211,6 +211,23 @@ function loadState(){try{return JSON.parse(localStorage.getItem('luzPalavra')||'
 function saveState(o){localStorage.setItem('luzPalavra',JSON.stringify(o));}
 function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>toastEl.classList.remove('show'),2200);}
 function pick(){return PHRASES[Math.floor(Math.random()*PHRASES.length)];}
+function shortRef(s){
+  return s
+    .replace('Virgem Maria — ','')
+    .replace('Primeira Carta de São João','1 João')
+    .replace('Segunda Carta aos Coríntios','2 Coríntios')
+    .replace('Primeira Carta aos Coríntios','1 Coríntios')
+    .replace('Primeira Carta aos Tessalonicenses','1 Tessalonicenses')
+    .replace('Carta aos Filipenses','Filipenses')
+    .replace('Carta aos Romanos','Romanos')
+    .replace('Carta aos Hebreus','Hebreus')
+    .replace('Profecia de Isaías','Isaías')
+    .replace('Profecia de Jeremias','Jeremias')
+    .replace('Evangelho de Mateus','Mateus')
+    .replace('Evangelho de João','João')
+    .replace('Evangelho de Lucas','Lucas')
+    .replace('Evangelho de Marcos','Marcos');
+}
 
 function highlightHTML(text){
   const toks=text.split(/(\s+)/);
@@ -231,7 +248,7 @@ function show(p,label){
   current=p;
   phraseEl.classList.remove('rolling');
   phraseEl.innerHTML=highlightHTML(p[lang]);
-  refEl.textContent=p.src;
+  refEl.textContent=shortRef(p.src);
 }
 
 function rollAnimation(label){
@@ -342,7 +359,7 @@ async function makeStory(p,label){
     const bottomY=renderPhrase(ctx,p,lang,W,H);
     ctx.textAlign='center';ctx.textBaseline='alphabetic';
     ctx.fillStyle='#9a9081';ctx.font='400 28px "Courier Prime", monospace';
-    ctx.fillText(p.src,W/2,bottomY+66);
+    ctx.fillText(shortRef(p.src),W/2,bottomY+66);
     ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 56px "Special Elite", monospace';
     ctx.fillText('caritas',W/2,H-200);
     ctx.fillStyle='#9a9081';ctx.font='400 32px "Courier Prime", monospace';
