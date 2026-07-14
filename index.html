@@ -21,8 +21,7 @@
   body{
     font-family:'Courier Prime',monospace;
     color:var(--ink);
-    min-height:100dvh;display:flex;align-items:center;justify-content:center;
-    padding:24px 16px;overflow-x:hidden;
+    min-height:100dvh;overflow-x:hidden;
     background:
       radial-gradient(circle at 50% -10%, rgba(255,255,255,.6), transparent 55%),
       radial-gradient(circle at 50% 110%, rgba(180,165,140,.35), transparent 55%),
@@ -33,18 +32,17 @@
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   }
 
-  .stage{position:relative;z-index:1;width:100%;max-width:520px;display:flex;flex-direction:column;align-items:center;gap:22px;}
+  .app{position:relative;z-index:1;width:100%;max-width:560px;min-height:100dvh;margin:0 auto;
+       display:flex;flex-direction:column;padding:18px 18px 22px;}
 
-  .topbar{width:100%;display:flex;align-items:center;justify-content:space-between;}
-  .langs{display:flex;gap:4px;}
-  .lang{
-    font-family:'Courier Prime',monospace;font-size:13px;font-weight:700;letter-spacing:.5px;
-    color:var(--muted);background:transparent;border:1px solid transparent;
-    padding:5px 9px;border-radius:6px;cursor:pointer;transition:.2s;
+  .topbar{display:flex;justify-content:flex-start;}
+  .left-controls{display:flex;align-items:center;gap:8px;}
+  .lang-cycle{
+    font-family:'Courier Prime',monospace;font-size:13px;font-weight:700;letter-spacing:1px;
+    color:var(--ink);background:rgba(255,255,255,.4);border:1px solid var(--line);
+    padding:8px 12px;border-radius:8px;cursor:pointer;transition:.2s;min-width:46px;text-align:center;
   }
-  .lang:hover{color:var(--ink);}
-  .lang.active{color:var(--ink);border-color:var(--line);}
-  .tools{display:flex;gap:8px;}
+  .lang-cycle:hover{background:rgba(255,255,255,.7);}
   .icon{
     width:38px;height:38px;border-radius:50%;border:1px solid var(--line);
     background:rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;
@@ -54,10 +52,10 @@
   .icon svg{width:17px;height:17px;fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
   .icon:disabled{opacity:.4;cursor:not-allowed;}
 
-  .sheet{width:100%;max-width:460px;text-align:center;padding:34px 10px;}
+  .sheet{flex:1;display:flex;align-items:center;justify-content:center;width:100%;padding:20px 6px;}
   .phrase{
     font-family:'Special Elite',monospace;font-size:30px;line-height:1.55;
-    color:var(--ink);text-align:center;min-height:200px;
+    color:var(--ink);text-align:center;
     display:block;padding:4px 2px;
   }
   .phrase.rolling{color:var(--muted);opacity:.85;}
@@ -73,18 +71,17 @@
   .hint{font-size:12px;color:var(--muted);text-align:center;min-height:16px;font-style:italic;margin-top:2px;}
   .hint b{font-style:normal;color:var(--ink);}
 
-  .controls{width:100%;display:flex;justify-content:center;margin-top:26px;}
+  .bottom{width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:8px;}
   .btn-download{
-    font-family:'Special Elite',monospace;font-size:17px;letter-spacing:.5px;
-    color:var(--paper);background:var(--ink);border:1px solid var(--ink);
-    padding:15px 34px;border-radius:12px;cursor:pointer;
-    display:inline-flex;align-items:center;gap:10px;
-    box-shadow:0 10px 22px -10px rgba(31,29,26,.6);transition:.2s;
+    font-family:'Special Elite',monospace;font-size:16px;letter-spacing:.5px;
+    color:var(--ink);background:rgba(255,255,255,.45);border:1px solid var(--line);
+    padding:13px 30px;border-radius:10px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;transition:.2s;
   }
-  .btn-download:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 16px 28px -10px rgba(31,29,26,.7);}
-  .btn-download:active:not(:disabled){transform:translateY(0);}
+  .btn-download:hover:not(:disabled){background:rgba(255,255,255,.75);border-color:var(--ink);}
+  .btn-download:active:not(:disabled){transform:translateY(1px);}
   .btn-download:disabled{opacity:.5;cursor:not-allowed;}
-  .btn-download svg{width:20px;height:20px;}
+  .btn-download svg{width:19px;height:19px;}
 
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
@@ -95,44 +92,39 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   @media (max-width:420px){
-    .phrase{font-size:23px;min-height:170px;}
-    .stage{gap:18px;}
-    .btn-download{width:100%;max-width:340px;justify-content:center;font-size:16px;padding:15px 20px;}
+    .phrase{font-size:23px;}
+    .app{padding:16px 14px 18px;}
+    .btn-download{width:100%;max-width:340px;justify-content:center;font-size:15px;padding:13px 20px;}
   }
   @media (min-width:760px){
-    .stage{max-width:560px;}
-    .phrase{font-size:34px;min-height:220px;}
-    .sheet{padding:46px 10px;}
+    .phrase{font-size:34px;}
+    .sheet{padding:30px 10px;}
   }
 </style>
 </head>
 <body>
-  <main class="stage">
-    <div class="topbar">
-      <div class="langs" id="langs">
-        <button class="lang active" data-lang="pt">PT</button>
-        <button class="lang" data-lang="en">EN</button>
-        <button class="lang" data-lang="es">ES</button>
-        <button class="lang" data-lang="it">IT</button>
+  <main class="app">
+    <header class="topbar">
+      <div class="left-controls">
+        <button class="lang-cycle" id="langBtn" title="Trocar idioma">PT</button>
+        <button class="icon" id="readBtn" title="Ler em voz alta">
+          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        </button>
       </div>
-      <button class="icon" id="readBtn" title="Ler em voz alta">
-        <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8a5 5 0 0 1 0 8"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-      </button>
-    </div>
+    </header>
 
     <section class="sheet">
       <p class="phrase" id="phrase"></p>
     </section>
 
-    <div class="sign"><a href="https://instagram.com/ilustre.ai" target="_blank" rel="noopener">@ilustre.ai</a></div>
-    <div class="hint" id="hint"></div>
-
-    <div class="controls">
+    <footer class="bottom">
       <button class="btn-download" id="shareBtn">
         <svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Baixar imagem
       </button>
-    </div>
+      <div class="sign"><a href="https://instagram.com/ilustre.ai" target="_blank" rel="noopener">@ilustre.ai</a></div>
+      <div class="hint" id="hint"></div>
+    </footer>
   </main>
 
   <div class="toast" id="toast"></div>
@@ -206,10 +198,11 @@ function isStrong(word,lang){
 
 const $ = s => document.querySelector(s);
 const phraseEl=$('#phrase'),
-      hintEl=$('#hint'), langBtns=document.querySelectorAll('.lang'),
+      hintEl=$('#hint'), langBtn=$('#langBtn'),
       readBtn=$('#readBtn'), shareBtn=$('#shareBtn'), toastEl=$('#toast');
 
-let lang='pt', current=null, rolling=false, speech=null;
+const LANGS=['pt','en','es','it'], LABELS={pt:'PT',en:'EN',es:'ES',it:'IT'};
+let lang='pt', langIdx=0, current=null, rolling=false, speech=null;
 
 function todayStr(){const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
 function loadState(){try{return JSON.parse(localStorage.getItem('luzPalavra')||'null');}catch(e){return null;}}
@@ -272,11 +265,12 @@ function init(){
   }
 }
 
-langBtns.forEach(b=>b.addEventListener('click',()=>{
-  lang=b.dataset.lang;
-  langBtns.forEach(x=>x.classList.toggle('active',x===b));
-  if(current)show(current,eyebrowEl.textContent);
-}));
+langBtn.addEventListener('click',()=>{
+  langIdx=(langIdx+1)%LANGS.length;
+  lang=LANGS[langIdx];
+  langBtn.textContent=LABELS[lang];
+  if(current)show(current);
+});
 
 readBtn.addEventListener('click',()=>{
   if(!current)return;
@@ -287,7 +281,7 @@ readBtn.addEventListener('click',()=>{
   speechSynthesis.speak(speech);
 });
 
-shareBtn.addEventListener('click',()=>{if(!rolling&&current)shareStory(current,eyebrowEl.textContent);});
+shareBtn.addEventListener('click',()=>{if(!rolling&&current)shareStory(current,'FRASE DO DIA');});
 
 /* ---------- canvas: story minimalista ---------- */
 function wrapText(ctx,text,maxW){
