@@ -66,8 +66,8 @@
     background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60' preserveAspectRatio='none'%3E%3Cpath d='M3,20 C40,10 70,28 110,18 C150,8 175,26 197,17 L199,46 C160,38 130,52 95,42 C60,32 30,50 2,42 Z' fill='%23f0e2a6'/%3E%3C/svg%3E") no-repeat;
     background-size:100% 100%;opacity:.9;transform:rotate(-0.9deg);border-radius:3px;
   }
-  .sign{margin-top:6px;}
-  .sign a{font-size:14px;color:var(--muted);text-decoration:none;letter-spacing:1px;transition:.25s;}
+  .sign{margin-top:6px;text-align:center;}
+  .sign a{font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:1px;transition:.25s;}
   .sign a:hover{color:var(--ink);}
   .hint{font-size:12px;color:var(--muted);text-align:center;min-height:16px;font-style:italic;margin-top:2px;}
   .hint b{font-style:normal;color:var(--ink);}
@@ -124,7 +124,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Baixar imagem
       </button>
-      <div class="sign"><a href="https://instagram.com/rhemar.fe" target="_blank" rel="noopener">RheMar</a><span style="display:block;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-top:2px;">Não desiste!</span></div>
+      <div class="sign"><a href="https://instagram.com/rhemar.fe" target="_blank" rel="noopener">RheMar</a><span style="display:block;font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-top:2px;">Não desiste!</span></div>
       <div class="hint" id="hint"></div>
     </footer>
   </main>
@@ -606,10 +606,10 @@ async function makeStory(p,label){
     ctx.textAlign='center';ctx.textBaseline='alphabetic';
     ctx.fillStyle='#9a9081';ctx.font='400 28px "Courier Prime", monospace';
     ctx.fillText(shortRef(p.src),W/2,bottomY+66);
-    ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 56px "Special Elite", monospace';
-    ctx.fillText('RheMar',W/2,H-200);
-    ctx.fillStyle='#9a9081';ctx.font='400 28px "Courier Prime", monospace';
-    ctx.fillText('Não desiste!',W/2,H-156);
+    ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 42px "Special Elite", monospace';
+    ctx.fillText('RheMar',W/2,H-180);
+    ctx.fillStyle='#9a9081';ctx.font='400 22px "Courier Prime", monospace';
+    ctx.fillText('Não desiste!',W/2,H-142);
     c.toBlob(b=>res(b),'image/png');
   });
 }
