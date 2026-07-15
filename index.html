@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Caritas</title>
+<title>RheMar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Special+Elite&display=swap" rel="stylesheet">
@@ -124,7 +124,7 @@
         <svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         Baixar imagem
       </button>
-      <div class="sign"><a href="https://instagram.com/ilustre.ai" target="_blank" rel="noopener">@ilustre.ai</a></div>
+      <div class="sign"><a href="https://instagram.com/rhemar.fe" target="_blank" rel="noopener">RheMar</a><span style="display:block;font-size:10px;color:var(--muted);letter-spacing:1.5px;margin-top:2px;">Não desiste!</span></div>
       <div class="hint" id="hint"></div>
     </footer>
   </main>
@@ -607,17 +607,16 @@ async function makeStory(p,label){
     ctx.fillStyle='#9a9081';ctx.font='400 28px "Courier Prime", monospace';
     ctx.fillText(shortRef(p.src),W/2,bottomY+66);
     ctx.fillStyle='rgba(31,29,26,.38)';ctx.font='400 56px "Special Elite", monospace';
-    ctx.fillText('caritas',W/2,H-200);
-    ctx.fillStyle='#9a9081';ctx.font='400 32px "Courier Prime", monospace';
-    ctx.fillText('by',W/2,H-152);
-    ctx.fillText('@ilustre.ai',W/2,H-116);
+    ctx.fillText('RheMar',W/2,H-200);
+    ctx.fillStyle='#9a9081';ctx.font='400 28px "Courier Prime", monospace';
+    ctx.fillText('Não desiste!',W/2,H-156);
     c.toBlob(b=>res(b),'image/png');
   });
 }
 async function shareStory(p,label){
   const blob=await makeStory(p,label);
   const url=URL.createObjectURL(blob),a=document.createElement('a');
-  a.href=url;a.download='caritas-story.png';a.click();URL.revokeObjectURL(url);
+  a.href=url;a.download='rhemar-story.png';a.click();URL.revokeObjectURL(url);
   toast('Story baixado ✦');
 }
 
