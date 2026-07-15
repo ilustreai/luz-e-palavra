@@ -616,10 +616,6 @@ async function makeStory(p,label){
 }
 async function shareStory(p,label){
   const blob=await makeStory(p,label);
-  const file=new File([blob],'caritas.png',{type:'image/png'});
-  if(navigator.canShare&&navigator.canShare({files:[file]})){
-    try{await navigator.share({files:[file],title:'Caritas'});return;}catch(e){}
-  }
   const url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='caritas-story.png';a.click();URL.revokeObjectURL(url);
   toast('Story baixado ✦');
